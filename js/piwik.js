@@ -2228,6 +2228,9 @@ if (typeof window.Matomo !== 'object') {
                 // Site ID
                 configTrackerSiteId = siteId || '',
 
+                // Allow tracking of `file://` URLs
+                configTrackFileUrls = false,
+
                 // User ID
                 configUserId = '',
 
@@ -3096,6 +3099,9 @@ if (typeof window.Matomo !== 'object') {
              * Send request
              */
             function sendRequest(request, delay, callback) {
+                if (!configTrackFileUrls && locationHrefAlias && locationHrefAlias.indexOf('file:') === 0) {
+                    return;
+                }
                 if (!clientHintsResolved) {
                   clientHintsRequestQueue.push(request);
                   return;
@@ -3620,6 +3626,10 @@ if (typeof window.Matomo !== 'object') {
 
             function setSiteId(siteId) {
                 configTrackerSiteId = siteId;
+            }
+
+            function setTrackFileUrls(trackFileUrls) {
+                configTrackFileUrls = trackFileUrls;
             }
 
             function sortObjectByKeys(value) {
@@ -5321,6 +5331,15 @@ if (typeof window.Matomo !== 'object') {
              */
             this.setSiteId = function (siteId) {
                 setSiteId(siteId);
+            };
+
+            /**
+             * Set allow tracking of file URLs
+             *
+             * @param bool trackFileUrls
+             */
+            this.setTrackFileUrls = function (trackFileUrls) {
+                setTrackFileUrls(trackFileUrls);
             };
 
             /**
